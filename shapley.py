@@ -35,11 +35,11 @@ def shapley(n, i, v):
     
     return sum
 
-numPermMembers = 5
-numNPermMembers = 10
-permVetoCount = 1
-nPermVetoCount = 99999
-winVotes = 9
+numPermMembers = 5 #5
+numNonPermMembers = 10 #10
+permVetoCount = 1 #1
+nonPermVetoCount = 2 #9999
+winVotes = 9 #9
 
 def v(s):
     if len(s) < 9:
@@ -56,29 +56,25 @@ def vModified(s):
             permVotes += 1
     permVetos = numPermMembers - permVotes
 
-    nPermVotes = 0
-    for i in range(numPermMembers, numPermMembers + numNPermMembers):
+    NonPermVotes = 0
+    for i in range(numPermMembers, numPermMembers + numNonPermMembers):
         if i in s:
-            nPermVotes += 1
-    nPermVetos = numPermMembers - nPermVotes
+            NonPermVotes += 1
+    NonPermVetos = numNonPermMembers - NonPermVotes
 
     if permVetos >= permVetoCount:
         return 0
         
-    if nPermVetos >= nPermVetoCount:
+    if NonPermVetos >= nonPermVetoCount:
         return 0
         
-    if permVotes + nPermVotes < winVotes:
+    if permVotes + NonPermVotes < winVotes:
         return 0
     
     return 1
 
-print(shapley(numPermMembers + numNPermMembers, 0, vModified) * 100)
-print(shapley(numPermMembers + numNPermMembers, 5, vModified ) * 100)
-
-for s in powerSet(list(range(15))):
-    break
-    v1 = v(s)
-    v2 = vModified(s)
-    if v1 != v2:
-        print(str(s) + ": " + str(v1) + " " + str(v2))
+permShap = shapley(numPermMembers + numNonPermMembers, 0, vModified) * 100
+NonPermShap = shapley(numPermMembers + numNonPermMembers, numPermMembers, vModified ) * 100
+print(str(round(permShap, 3)) + "%")
+print(str(round(NonPermShap, 3)) + "%")
+print(permShap*numPermMembers + NonPermShap*numNonPermMembers)
